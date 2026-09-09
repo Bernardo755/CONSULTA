@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Asambleas Informativas Beca Universal de Educación Media Superior “Benito Juárez” y Jóvenes Escribiendo el Futuro
+  Hidalgo</title>
+
+<style>
+
+body{
+  margin:0;
+  padding:0;
+  font-family: Arial, sans-serif;
+  background:#f7f2f4;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.container{
+  width:90%;
+  max-width:550px;
+  background:white;
+  border-radius:25px;
+  padding:35px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.12);
+  text-align:center;
+}
+
+h1{
+  color:#7a1f3d;
+  font-size:34px;
+  margin-bottom:10px;
+  line-height:1.4;
+}
+
+.subtitulo{
+  font-size:20px;
+  color:#444;
+  margin-bottom:30px;
+  line-height:1.5;
+}
+
+input{
+  width:100%;
+  padding:18px;
+  font-size:24px;
+  border-radius:15px;
+  border:2px solid #d6c5cb;
+  box-sizing:border-box;
+  text-align:center;
+}
+
+input:focus{
+  outline:none;
+  border-color:#7a1f3d;
+  box-shadow:0 0 8px rgba(122,31,61,0.25);
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:18px;
+  background:#7a1f3d;
+  color:white;
+  border:none;
+  border-radius:15px;
+  font-size:26px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#5e1730;
+}
+
+.card{
+  margin-top:30px;
+  background:#faf5f7;
+  border-radius:20px;
+  padding:25px;
+  text-align:left;
+  border:1px solid #eadde2;
+}
+
+.card h2{
+  color:#7a1f3d;
+  margin-top:0;
+  margin-bottom:20px;
+}
+
+.item{
+  margin-bottom:18px;
+  font-size:20px;
+  color:#333;
+  line-height:1.5;
+}
+
+.icon{
+  font-size:24px;
+  margin-right:10px;
+}
+
+.error{
+  margin-top:20px;
+  color:#c62828;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.loader{
+  margin-top:20px;
+  font-size:22px;
+  color:#7a1f3d;
+}
+
+.footer{
+  margin-top:25px;
+  font-size:16px;
+  color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+ <h1>
+  Asambleas Informativas
+  <br>
+  Beca Universal de Educación Media Superior "Benito Juárez"
+  <br>
+  y Jóvenes Escribiendo el Futuro<br>
+  Hidalgo
+</h1>
+
+  <div class="subtitulo">
+    Coloca la clave de la escuela para conocer la programación.
+  </div>
+
+  <input
+    type="text"
+    id="cct"
+    placeholder="Ingresa tu CCT"
+  >
+
+  <button onclick="buscar()">
+    🔎 CONSULTAR
+  </button>
+
+  <div id="resultado"></div>
+
+ <div class="footer">
+  Becas Bienestar<br>
+  Coordinación Nacional<br>
+  Hidalgo
+</div>
+
+</div>
+
+<script>
+
+async function buscar(){
+
+  const cct = document
+    .getElementById("cct")
+    .value
+    .trim();
+
+  const div = document.getElementById("resultado");
+
+  if(!cct){
+
+    div.innerHTML = `
+      <p class="error">
+        ⚠️ Ingresa tu CCT
+      </p>
+    `;
+
+    return;
+  }
+
+  div.innerHTML = `
+    <p class="loader">
+      ⏳ Consultando información...
+    </p>
+  `;
+
+  const url = "https://script.google.com/macros/s/AKfycbxtl4V2dcZDiTLTWBFWz-_0WwhOjieoKRqdYHhuXq2Otaf2j5ywJrmRxWMGa7xEiCpJ/exec";
+
+  try{
+
+    const respuesta = await fetch(
+      url + "?cct=" + encodeURIComponent(cct) + "&t=" + new Date().getTime(),
+      { cache: "no-store" }
+    );
+
+    const datos = await respuesta.json();
+
+    if(datos.error){
+
+      div.innerHTML = `
+        <p class="error">
+          ❌ ${datos.error}
+        </p>
+      `;
+
+    }else{
+
+      div.innerHTML = `
+        <div class="card">
+
+          <h2>🏫 ${datos.escuela}</h2>
+
+          <div class="item">
+            <span class="icon">🕒</span>
+            <b>Atención:</b> ${datos.atencion}
+          </div>
+
+          <div class="item">
+            <span class="icon">🏢</span>
+            <b>Sede:</b> ${datos.sede}
+          </div>
+
+          <div class="item">
+            <span class="icon">📍</span>
+            <b>Dirección:</b> ${datos.direccion}
+          </div>
+
+        </div>
+      `;
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    div.innerHTML = `
+      <p class="error">
+        ⚠️ Error al consultar información
+      </p>
+    `;
+  }
+}
+
+</script>
+
+</body>
+</html>
