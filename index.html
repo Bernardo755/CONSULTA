@@ -5,8 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Asambleas Informativas Beca Universal de Educación Media Superior “Benito Juárez” y Jóvenes Escribiendo el Futuro
-  Hidalgo</title>
+<title>Asambleas Informativas Beca Universal de Educación Media Superior “Benito Juárez” y Jóvenes Escribiendo el Futuro  Hidalgo</title>
 
 <style>
 
@@ -85,6 +84,7 @@ button:hover{
   padding:25px;
   text-align:left;
   border:1px solid #eadde2;
+  flex: 1; /* Para que tome el espacio disponible si hay imagen a un lado */
 }
 
 .card h2{
@@ -124,6 +124,18 @@ button:hover{
   color:#777;
 }
 
+/* Nuevo estilo para acomodar la imagen lateral y la tarjeta */
+.resultado-flex {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+}
+.imagen-lateral {
+  width: 100px; /* Puedes ajustar este tamaño */
+  height: auto;
+}
+
 </style>
 
 </head>
@@ -132,14 +144,17 @@ button:hover{
 
 <div class="container">
 
- <h1>
-  Asambleas Informativas
-  <br>
-  Beca Universal de Educación Media Superior "Benito Juárez"
-  <br>
-  y Jóvenes Escribiendo el Futuro<br>
-  Hidalgo
-</h1>
+  <!-- Imagen principal agregada arriba del título -->
+  <img id="logoPrincipal" src="imagen11.png" alt="Logo Principal" style="max-width: 100%; height: auto; margin-bottom: 15px;">
+
+  <h1 id="tituloPrincipal">
+    Asambleas Informativas
+    <br>
+    Beca Universal de Educación Media Superior "Benito Juárez"
+    <br>
+    y Jóvenes Escribiendo el Futuro<br>
+    Hidalgo
+  </h1>
 
   <div class="subtitulo">
     Coloca la clave de la escuela para conocer la programación.
@@ -175,15 +190,26 @@ async function buscar(){
     .trim();
 
   const div = document.getElementById("resultado");
+  const logoPrincipal = document.getElementById("logoPrincipal");
+  const tituloPrincipal = document.getElementById("tituloPrincipal");
+
+  // Variables para restaurar el estado original
+  const tituloOriginal = `Asambleas Informativas<br>Beca Universal de Educación Media Superior "Benito Juárez"<br>y Jóvenes Escribiendo el Futuro<br>Hidalgo`;
+  const logoOriginal = "imagen11.png"; // Asumiendo formato png o jpg, ajusta si es necesario
+
+  // Función para resetear a los valores por defecto
+  function resetDefault() {
+    logoPrincipal.src = logoOriginal;
+    tituloPrincipal.innerHTML = tituloOriginal;
+  }
 
   if(!cct){
-
     div.innerHTML = `
       <p class="error">
         ⚠️ Ingresa tu CCT
       </p>
     `;
-
+    resetDefault();
     return;
   }
 
@@ -211,29 +237,50 @@ async function buscar(){
           ❌ ${datos.error}
         </p>
       `;
+      resetDefault();
 
     }else{
 
+      // Evaluamos la Columna C (debes asegurarte que tu script de Google envíe este dato, aquí lo llamamos datos.columnaC)
+      let imagenLateralHTML = "";
+
+      if(datos.columnaC === "S311") {
+        tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Universal de Educación Media Superior "Benito Juárez"`;
+        logoPrincipal.src = "LOGO EMS.png";
+        imagenLateralHTML = `<img src="EMS.png" alt="Logo EMS" class="imagen-lateral">`;
+      } 
+      else if(datos.columnaC === "S283") {
+        tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Jóvenes Escribiendo el Futuro`;
+        logoPrincipal.src = "LOGO JEF.png";
+        imagenLateralHTML = `<img src="JEF.png" alt="Logo JEF" class="imagen-lateral">`;
+      } 
+      else {
+        // Caso contrario, se mantienen texto y logo original
+        resetDefault();
+      }
+
+      // Estructura de la tarjeta
       div.innerHTML = `
-        <div class="card">
+        <div class="resultado-flex">
+          ${imagenLateralHTML}
+          <div class="card">
+            <h2>🏫 ${datos.escuela}</h2>
 
-          <h2>🏫 ${datos.escuela}</h2>
+            <div class="item">
+              <span class="icon">🕒</span>
+              <b>Atención:</b> ${datos.atencion}
+            </div>
 
-          <div class="item">
-            <span class="icon">🕒</span>
-            <b>Atención:</b> ${datos.atencion}
+            <div class="item">
+              <span class="icon">🏢</span>
+              <b>Sede:</b> ${datos.sede}
+            </div>
+
+            <div class="item">
+              <span class="icon">📍</span>
+              <b>Dirección:</b> ${datos.direccion}
+            </div>
           </div>
-
-          <div class="item">
-            <span class="icon">🏢</span>
-            <b>Sede:</b> ${datos.sede}
-          </div>
-
-          <div class="item">
-            <span class="icon">📍</span>
-            <b>Dirección:</b> ${datos.direccion}
-          </div>
-
         </div>
       `;
     }
@@ -247,6 +294,7 @@ async function buscar(){
         ⚠️ Error al consultar información
       </p>
     `;
+    resetDefault();
   }
 }
 
