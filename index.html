@@ -123,10 +123,10 @@ button:hover{
   color:#777;
 }
 
-/* Nuevo estilo para la imagen ubicada debajo del resultado */
+/* Estilo para la imagen ubicada debajo del resultado */
 .imagen-inferior {
   width: 100%;
-  max-width: 280px; /* Tamaño más grande ajustable */
+  max-width: 280px;
   height: auto;
   margin: 25px auto 0 auto;
   display: block;
@@ -240,6 +240,7 @@ async function buscar(){
 
       let imagenInferiorHTML = "";
 
+      // Evaluación del valor devuelto en la Columna C
       if(datos.columnaC === "S311") {
         tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Universal de Educación Media Superior "Benito Juárez"`;
         logoPrincipal.src = "LOGO EMS.png";
@@ -249,6 +250,11 @@ async function buscar(){
         tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Jóvenes Escribiendo el Futuro`;
         logoPrincipal.src = "LOGO JEF.png";
         imagenInferiorHTML = `<img src="JEF.jpeg" alt="Logo JEF" class="imagen-inferior">`;
+      } 
+      else if(datos.columnaC === "S072") {
+        tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca de Educación Básica`;
+        logoPrincipal.src = "LOGO BASICA.png";
+        imagenInferiorHTML = `<img src="BASICA.jpeg" alt="Logo Básica" class="imagen-inferior">`;
       } 
       else {
         resetDefault();
