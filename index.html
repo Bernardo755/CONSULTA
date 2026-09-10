@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Asambleas Informativas Beca Universal de Educación Media Superior “Benito Juárez” y Jóvenes Escribiendo el Futuro  Hidalgo</title>
+<title>Asambleas Informativas Beca Universal de Educación Media Superior “Benito Juárez” y Jóvenes Escribiendo el Futuro Hidalgo</title>
 
 <style>
 
@@ -84,7 +84,6 @@ button:hover{
   padding:25px;
   text-align:left;
   border:1px solid #eadde2;
-  flex: 1; /* Para que tome el espacio disponible si hay imagen a un lado */
 }
 
 .card h2{
@@ -124,16 +123,14 @@ button:hover{
   color:#777;
 }
 
-/* Nuevo estilo para acomodar la imagen lateral y la tarjeta */
-.resultado-flex {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  text-align: left;
-}
-.imagen-lateral {
-  width: 100px; /* Puedes ajustar este tamaño */
+/* Nuevo estilo para la imagen ubicada debajo del resultado */
+.imagen-inferior {
+  width: 100%;
+  max-width: 280px; /* Tamaño más grande ajustable */
   height: auto;
+  margin: 25px auto 0 auto;
+  display: block;
+  border-radius: 12px;
 }
 
 </style>
@@ -172,11 +169,11 @@ button:hover{
 
   <div id="resultado"></div>
 
- <div class="footer">
-  Becas Bienestar<br>
-  Coordinación Nacional<br>
-  Hidalgo
-</div>
+  <div class="footer">
+    Becas Bienestar<br>
+    Coordinación Nacional<br>
+    Hidalgo
+  </div>
 
 </div>
 
@@ -195,7 +192,7 @@ async function buscar(){
 
   // Variables para restaurar el estado original
   const tituloOriginal = `Asambleas Informativas<br>Beca Universal de Educación Media Superior "Benito Juárez"<br>y Jóvenes Escribiendo el Futuro<br>Hidalgo`;
-  const logoOriginal = "Imagen11.png"; // Asumiendo formato png o jpg, ajusta si es necesario
+  const logoOriginal = "Imagen11.png";
 
   // Función para resetear a los valores por defecto
   function resetDefault() {
@@ -241,47 +238,43 @@ async function buscar(){
 
     }else{
 
-      // Evaluamos la Columna C (debes asegurarte que tu script de Google envíe este dato, aquí lo llamamos datos.columnaC)
-      let imagenLateralHTML = "";
+      let imagenInferiorHTML = "";
 
       if(datos.columnaC === "S311") {
         tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Universal de Educación Media Superior "Benito Juárez"`;
         logoPrincipal.src = "LOGO EMS.png";
-        imagenLateralHTML = `<img src="EMS.jpeg" alt="Logo EMS" class="imagen-lateral">`;
+        imagenInferiorHTML = `<img src="EMS.jpeg" alt="Logo EMS" class="imagen-inferior">`;
       } 
       else if(datos.columnaC === "S283") {
         tituloPrincipal.innerHTML = `Asambleas Informativas<br>Beca Jóvenes Escribiendo el Futuro`;
         logoPrincipal.src = "LOGO JEF.png";
-        imagenLateralHTML = `<img src="JEF.jpeg" alt="Logo JEF" class="imagen-lateral">`;
+        imagenInferiorHTML = `<img src="JEF.jpeg" alt="Logo JEF" class="imagen-inferior">`;
       } 
       else {
-        // Caso contrario, se mantienen texto y logo original
         resetDefault();
       }
 
-      // Estructura de la tarjeta
+      // Estructura de la tarjeta + Imagen abajo
       div.innerHTML = `
-        <div class="resultado-flex">
-          ${imagenLateralHTML}
-          <div class="card">
-            <h2>🏫 ${datos.escuela}</h2>
+        <div class="card">
+          <h2>🏫 ${datos.escuela}</h2>
 
-            <div class="item">
-              <span class="icon">🕒</span>
-              <b>Atención:</b> ${datos.atencion}
-            </div>
+          <div class="item">
+            <span class="icon">🕒</span>
+            <b>Atención:</b> ${datos.atencion}
+          </div>
 
-            <div class="item">
-              <span class="icon">🏢</span>
-              <b>Sede:</b> ${datos.sede}
-            </div>
+          <div class="item">
+            <span class="icon">🏢</span>
+            <b>Sede:</b> ${datos.sede}
+          </div>
 
-            <div class="item">
-              <span class="icon">📍</span>
-              <b>Dirección:</b> ${datos.direccion}
-            </div>
+          <div class="item">
+            <span class="icon">📍</span>
+            <b>Dirección:</b> ${datos.direccion}
           </div>
         </div>
+        ${imagenInferiorHTML}
       `;
     }
 
